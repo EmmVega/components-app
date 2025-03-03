@@ -9,11 +9,17 @@ import "../global.css"
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Text } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useThemeColor } from '@/hooks/useThemeColor';
+import ThemedView from '@/presentation/shared/ThemedView';
+import ThemeText from '@/presentation/shared/ThemeText';
+import { allRoutes } from '@/constants/Routes';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const backgroundColor = useThemeColor({}, 'background');
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
@@ -30,11 +36,30 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      {/* <Stack> */}
-     <Text className='mt-10 text-7xl font-bold text-light-primary dark:text-dark-text'>Hola universo</Text>
-      {/* </Stack> */}
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: 'backgroundColor' }}>
+      <ThemeProvider
+        value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+      >
+        <Stack 
+          screenOptions={{
+            headerShadowVisible: false,
+            headerStyle: {
+              backgroundColor: backgroundColor,
+            },
+            contentStyle: {
+              backgroundColor: backgroundColor,
+            },
+        }}>
+          <Stack.Screen name='index' options={{
+            title: '',
+          }}/>
+          { allRoutes.map((route) => (
+            <Stack.Screen key={route.name} name={route.name} options={{
+              title: route.title,
+            }} />
+          ))}
+        </Stack>
+      </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }
