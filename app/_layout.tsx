@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+// import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -13,12 +13,13 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import { allRoutes } from '@/constants/Routes';
 
 import "../global.css"
+import { ThemeChangerProvider } from '@/presentation/context/ThemeChangerContext';
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const backgroundColor = useThemeColor({}, 'background');
-  const colorScheme = useColorScheme();
+  // const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
@@ -35,9 +36,10 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: 'backgroundColor' }}>
-      <ThemeProvider
+      {/* <ThemeProvider
         value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-      >
+      > */}
+      <ThemeChangerProvider>
         <Stack 
           screenOptions={{
             headerShadowVisible: false,
@@ -57,7 +59,8 @@ export default function RootLayout() {
             }} />
           ))}
         </Stack>
-      </ThemeProvider>
+      </ThemeChangerProvider>
+      {/* </ThemeProvider> */}
     </GestureHandlerRootView>
   );
 }
